@@ -130,7 +130,7 @@ html.pronto .chip,html.pronto .col,html.pronto #dom,html.pronto .in{animation:no
 <script>
 /* ===================== ESCALA (folha manuscrita de 16/11/2026) ===================== */
 const DIAS=[
-  {d:'Terça',  n:['Juliana','Tais','Francielle','Veridiana','Emily','Willian','Mara','Phelipe']},
+  {d:'Terça',  n:['Juliana','Tais','Francielle','Veridiana','Emily','Willian','Mara','Phelipe'], fim:'Phelipe volta com a van'},
   {d:'Quarta', n:['Karina','Vitória','Willian','Mara'], g:{h:'17h30',n:['Juliana','Phelipe','Emily']}},
   {d:'Quinta', n:['Tais','Francielle','Veridiana','Willian','Emily'], g:{h:'17h30',n:['Juliana','Phelipe']}},
   {d:'Sexta',  n:['Tais','Karina','Vitória','Veridiana','Willian','Phelipe','Emily','Rafaela','Roje','Maycon'], oroch:['Phelipe','Willian','Emily']},
@@ -138,6 +138,7 @@ const DIAS=[
   {d:'Domingo',def:true, notas:[['Phelipe','até 17h30, volta com a van'],['Willian','com o Oroch']], obs:'todos os dias'}
 ];
 const NOTAS_DOM={Phelipe:'volta com a van, até 17h30',Willian:'volta com o Oroch'};
+const NOTAS_TER={Phelipe:'volta com a van'};
 const ROBERTO='Roberto';
 
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -195,8 +196,8 @@ function mostrar(n){
   document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',!!n&&c.dataset.n===n));
   if(!n){who.textContent=dica;return;}
   if(n===ROBERTO){who.innerHTML=`<b>${ROBERTO}</b>acompanhando todos os dias, até 22h`;return;}
-  const dd=diasDe[n],dom=NOTAS_DOM[n];
-  who.innerHTML=`<b>${esc(n)}</b>${dd.join(', ')} · ${dd.length} ${dd.length===1?'dia':'dias'}${dom?' · domingo: '+dom:''}`;
+  const dd=diasDe[n],dom=NOTAS_DOM[n],ter=NOTAS_TER[n];
+  who.innerHTML=`<b>${esc(n)}</b>${dd.join(', ')} · ${dd.length} ${dd.length===1?'dia':'dias'}${ter?' · terça: '+ter:''}${dom?' · domingo: '+dom:''}`;
 }
 document.addEventListener('click',e=>{
   const c=e.target.closest('.chip');
