@@ -112,6 +112,7 @@ html.print,html.print body{height:auto!important;overflow:visible!important;back
 html.print,html.print *{-webkit-print-color-adjust:exact;print-color-adjust:exact;animation:none!important;transition:none!important}
 html.print #stage{position:relative!important;left:0!important;top:0!important;transform:none!important}
 @media (prefers-reduced-motion:reduce){.bl{animation:none}}
+html.pronto .chip,html.pronto .col,html.pronto #dom,html.pronto .in{animation:none!important}
 </style>
 </head>
 <body>
@@ -204,13 +205,27 @@ document.addEventListener('click',e=>{
 });
 
 /* escala da tela */
+/* mede a tela de verdade (celular, WhatsApp, tablet) e posiciona o quadro a partir do canto,
+   para nenhuma coluna ficar cortada fora da tela */
 function fit(){
-  const mob=innerWidth<1000&&!/[?&]print\b/.test(location.search);
-  document.documentElement.classList.toggle('mob',mob);
-  const s=Math.min(innerWidth/1920,innerHeight/1080);
-  document.getElementById('stage').style.transform=mob?'none':`translate(-50%,-50%) scale(${s})`;
+  const de=document.documentElement;
+  const vw=de.clientWidth||innerWidth;
+  const vh=(window.visualViewport&&visualViewport.height)||innerHeight||de.clientHeight;
+  const mob=vw<1000&&!/[?&]print\b/.test(location.search);
+  de.classList.toggle('mob',mob);
+  const st=document.getElementById('stage');
+  if(mob){st.style.transform='none';st.style.left='';st.style.top='';st.style.transformOrigin='';return;}
+  const s=Math.min(vw/1920,vh/1080);
+  st.style.left='0';st.style.top='0';st.style.transformOrigin='0 0';
+  st.style.transform=`translate(${Math.max(0,(vw-1920*s)/2)}px,${Math.max(0,(vh-1080*s)/2)}px) scale(${s})`;
 }
-addEventListener('resize',fit);fit();
+['resize','orientationchange','load','pageshow'].forEach(ev=>addEventListener(ev,fit));
+if(window.visualViewport)visualViewport.addEventListener('resize',fit);
+if(window.ResizeObserver)new ResizeObserver(fit).observe(document.documentElement);
+fit();setTimeout(fit,300);setTimeout(fit,1200);
+/* garantia: se a animação de entrada não rodar (aba em segundo plano, economia de bateria),
+   todos os nomes aparecem mesmo assim */
+setTimeout(()=>document.documentElement.classList.add('pronto'),2600);
 if(/[?&]print\b/.test(location.search))document.documentElement.classList.add('print');
 </script>
 </body>
